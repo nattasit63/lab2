@@ -102,7 +102,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  if(ButtonMatrix!=0  &&  ButtonMatrix!=before)
+	  if(ButtonMatrixState!=0  &&  ButtonMatrixState!=before)
 	  {
 	  switch(state){
 	  case waiting_ok:
@@ -234,7 +234,7 @@ int main(void)
 		  break;
 
 	  }
-	  before = ButtonMatrix;
+	  before = ButtonMatrixState;
 	  }
     /* USER CODE END WHILE */
 
