@@ -103,8 +103,19 @@ int main(void)
   {
 	  if(ButtonMatrix!=0){
 	  switch(state){
+	  case waiting_ok:
+		  if (ButtonMatrixState==0b1000000000000000)
+		  		{
+			  	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
+			  	  state =start
+			    }
+			  else{
+			  state = waiting_clear;
+			  }
+
+	  break;
 	  case waiting_clear:
-	    if (ButtonMatrixState==1000)
+	    if (ButtonMatrixState==0b1000)
 		{
 		  			state = start;
 		  		  }
@@ -117,7 +128,7 @@ int main(void)
 		  state =first;
 	  break;
 	  case first:
-		  if (ButtonMatrixState==1000000)
+		  if (ButtonMatrixState==0b1000000)
 		  		  {
 		  			state = second;
 		  		  }
@@ -126,7 +137,7 @@ int main(void)
 		  		  }
 	  break;
 	  case second:
-		  if (ButtonMatrixState==10)
+		  if (ButtonMatrixState==0b10)
 		  		  {
 		  			state = third;
 		  		  }
@@ -135,7 +146,7 @@ int main(void)
 		  		  }
 	  break;
 	  case third:
-		  if (ButtonMatrixState==100)
+		  if (ButtonMatrixState==0b100)
 		  		  {
 		  			state = four;
 		  		  }
@@ -144,7 +155,7 @@ int main(void)
 		  		  }
 	  break;
 	  case four:
-		  if (ButtonMatrixState==10000)
+		  if (ButtonMatrixState==0b10000)
 		  		  {
 		  			state = five;
 		  		  }
@@ -153,7 +164,7 @@ int main(void)
 		  		  }
 	  break;
 	  case five:
-		  if (ButtonMatrixState==1000000000000)
+		  if (ButtonMatrixState==0b1000000000000)
 		  		  {
 		  			state = six;
 		  		  }
@@ -162,7 +173,7 @@ int main(void)
 		  		  }
 	  break;
 	  case six:
-		  if (ButtonMatrixState==100000)
+		  if (ButtonMatrixState==0b100000)
 		  		  	{
 		  		  	state = seven;
 		  		  	}
@@ -171,7 +182,7 @@ int main(void)
 		  		  	}
 	  break;
 	  case seven:
-		  if (ButtonMatrixState==1000000000000)
+		  if (ButtonMatrixState==0b1000000000000)
 		  		  	{
 		  		  	state = eight;
 		  		  	}
@@ -181,7 +192,7 @@ int main(void)
 		  		  	}
 	break;
 	  case eight:
-		  if (ButtonMatrixState==1000000000000)
+		  if (ButtonMatrixState==0b1000000000000)
 		  {
 			state = eight;
 		  }
@@ -190,7 +201,7 @@ int main(void)
 		  }
 		  break;
 	  case nine:
-		  if (ButtonMatrixState==1000000000000)
+		  if (ButtonMatrixState==0b1000000000000)
 		  		  {
 		  			state = ten;
 		  		  }
@@ -200,7 +211,7 @@ int main(void)
 		  		  break;
 		  break;
 	  case ten:
-		  if (ButtonMatrixState==1000000)
+		  if (ButtonMatrixState==0b1000000)
 		  		  {
 		  			state = eleven;
 		  		  }
@@ -210,7 +221,7 @@ int main(void)
 		  		  break;
 		  break;
 	  case eleven:
-		  if (ButtonMatrixState==10000000000)
+		  if (ButtonMatrixState==0b10000000000)
 		  		  {
 		  			state = waiting_ok;
 		  		  }
