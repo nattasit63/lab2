@@ -115,7 +115,9 @@ int main(void)
 	  break;
 	  case five:
 	  break;
-	  case
+	  case six:
+	  break;
+	  case seven:
 
 	  }
     /* USER CODE END WHILE */
