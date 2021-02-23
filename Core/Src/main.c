@@ -94,6 +94,7 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   uint16_t state=0;
+  uint32_t before=0;
   enum{start=0,first,second,third,four,five,six,seven,eight,nine,ten,eleven,waiting_clear,waiting_ok};
   /* USER CODE END 2 */
 
@@ -101,13 +102,14 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  if(ButtonMatrix!=0){
+	  if(ButtonMatrix!=0  &&  ButtonMatrix!=before)
+	  {
 	  switch(state){
 	  case waiting_ok:
 		  if (ButtonMatrixState==0b1000000000000000)
 		  		{
 			  	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
-			  	  state =start
+			  	  state =start;
 			    }
 			  else{
 			  state = waiting_clear;
@@ -232,6 +234,7 @@ int main(void)
 		  break;
 
 	  }
+	  before = ButtonMatrix;
 	  }
     /* USER CODE END WHILE */
 
