@@ -94,41 +94,133 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   uint16_t state=0;
-  enum{start=0,first,second,third,four,five,six,seven,eight,nine,ten,eleven};
+  enum{start=0,first,second,third,four,five,six,seven,eight,nine,ten,eleven,waiting_clear,waiting_ok};
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  if(ButtonMatrix!=0){
 	  switch(state){
+	  case waiting_clear:
+	    if (ButtonMatrixState==1000)
+		{
+		  			state = start;
+		  		  }
+		  		  else{
+		  			state = waiting_clear;
+		  		  }
+		  		  break;
+	  break;
 	  case 0:
 		  state =first;
 	  break;
 	  case first:
-
+		  if (ButtonMatrixState==1000000)
+		  		  {
+		  			state = second;
+		  		  }
+		  		  else{
+		  			state = waiting_clear;
+		  		  }
 	  break;
 	  case second:
+		  if (ButtonMatrixState==10)
+		  		  {
+		  			state = third;
+		  		  }
+		  		  else{
+		  			state = waiting_clear;
+		  		  }
 	  break;
 	  case third:
+		  if (ButtonMatrixState==100)
+		  		  {
+		  			state = four;
+		  		  }
+		  		  else{
+		  			state = waiting_clear;
+		  		  }
 	  break;
 	  case four:
+		  if (ButtonMatrixState==10000)
+		  		  {
+		  			state = five;
+		  		  }
+		  		  else{
+		  			state = waiting_clear;
+		  		  }
 	  break;
 	  case five:
+		  if (ButtonMatrixState==1000000000000)
+		  		  {
+		  			state = six;
+		  		  }
+		  		  else{
+		  			state = waiting_clear;
+		  		  }
 	  break;
 	  case six:
+		  if (ButtonMatrixState==100000)
+		  		  	{
+		  		  	state = seven;
+		  		  	}
+		  		  	else{
+		  		  	state = waiting_clear;
+		  		  	}
 	  break;
 	  case seven:
+		  if (ButtonMatrixState==1000000000000)
+		  		  	{
+		  		  	state = eight;
+		  		  	}
+		  else
+		  		  	{
+		  		  	state = waiting_clear;
+		  		  	}
 	break;
 	  case eight:
+		  if (ButtonMatrixState==1000000000000)
+		  {
+			state = eight;
+		  }
+		  else{
+			state = waiting_clear;
+		  }
 		  break;
 	  case nine:
+		  if (ButtonMatrixState==1000000000000)
+		  		  {
+		  			state = ten;
+		  		  }
+		  		  else{
+		  			state = waiting_clear;
+		  		  }
+		  		  break;
 		  break;
 	  case ten:
+		  if (ButtonMatrixState==1000000)
+		  		  {
+		  			state = eleven;
+		  		  }
+		  		  else{
+		  			state = waiting_clear;
+		  		  }
+		  		  break;
 		  break;
 	  case eleven:
+		  if (ButtonMatrixState==10000000000)
+		  		  {
+		  			state = waiting_ok;
+		  		  }
+		  		  else{
+		  			state = waiting_clear;
+		  		  }
+		  		  break;
 		  break;
 
+	  }
 	  }
     /* USER CODE END WHILE */
 
