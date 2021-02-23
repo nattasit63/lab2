@@ -93,7 +93,7 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-  uint8_t state=0;
+  uint16_t state=0;
   enum{start=0,first,second,third,four,five,six,seven,eight,nine,ten,eleven};
   /* USER CODE END 2 */
 
@@ -106,6 +106,7 @@ int main(void)
 		  state =first;
 	  break;
 	  case first:
+
 	  break;
 	  case second:
 	  break;
@@ -118,6 +119,15 @@ int main(void)
 	  case six:
 	  break;
 	  case seven:
+	break;
+	  case eight:
+		  break;
+	  case nine:
+		  break;
+	  case ten:
+		  break;
+	  case eleven:
+		  break;
 
 	  }
     /* USER CODE END WHILE */
