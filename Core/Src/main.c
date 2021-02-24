@@ -54,10 +54,11 @@ static void MX_USART2_UART_Init(void);
 uint16_t ButtonMatrixState=0;
 uint32_t ButtonMatrixTimestamp=0;
 GPIO_TypeDef* ButtonmatrixPort[8]={GPIOA,GPIOB,GPIOB,GPIOB,GPIOA,GPIOC,GPIOB,GPIOA};
-uint16_t state=0;
-uint32_t before=0;
+uint8_t state=1;
+uint16_t before=0;
 uint8_t led=0;
-enum{start=0,first,second,third,four,five,six,seven,eight,nine,ten,eleven,waiting_clear,waiting_ok};
+uint8_t firstthird=0;
+enum{first=1,second,third,four,five,six,seven,eight,nine,ten,eleven,waiting_clear,waiting_ok};
 void ButtonMatrixUpdate();
 void switchcase();
 
@@ -300,54 +301,202 @@ void switchcase(){
 		  {
 		  switch(state){
 		  case waiting_ok:
+			  if(ButtonMatrixState==0b1000000000000000)
+			  {
+			  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+			  state = first;
+			  }
+			  else if (ButtonMatrixState==0b1000)
+			  			  {
+			  				state = first;
 
-			  //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+			  			  }
+			  else
+			  {
+				state = waiting_clear;
+			  }
+
 		  break;
 		  case waiting_clear:
-
-
+			  if(ButtonMatrixState==0b1000)
+			  {
+				  state = first;
+			  }
 		  break;
-		  case 0:
-			  state =first;
-		  break;
+
 		  case first:
-//			  if(ButtonMatrixState==)
+			  if(ButtonMatrixState==0b1000000)
+			  {
+				  state = second;
+			  }
+			  else if (ButtonMatrixState==0b1000)
+			  {
+				state = first;
+
+			  }
+			  else
+			  			  {
+			  				state = waiting_clear;
+			  			  }
 
 		  break;
 		  case second:
+			  if(ButtonMatrixState==0b1000000000)
+			  {
+				  state = third;
+			  }
+			  else if (ButtonMatrixState==0b1000)
+			  			  {
+			  				state = first;
+
+			  			  }
+			  else
+			  			  {
+			  				state = waiting_clear;
+			  			  }
 
 		  break;
 		  case third:
+			  if(ButtonMatrixState==0b10000000000)
+			  {
 
+				  state = four;
+			  }
+			  else if (ButtonMatrixState==0b1000)
+			  			  {
+			  				state = first;
+
+			  			  }
+			  else
+			  			  {
+			  				state = waiting_clear;
+			  			  }
 		  break;
 		  case four:
+			  if(ButtonMatrixState==0b10000)
+			  {
+			   state = five;
+			  }
+			  else if (ButtonMatrixState==0b1000)
+			  			  {
+			  				state = first;
 
+			  			  }
+			  else
+			  			  {
+			  				state = waiting_clear;
+			  			  }
 			  break;
 		  case five:
+			  if(ButtonMatrixState==0b1000000000000)
+			  	{
+			  	 state = six;
+			  	 }
+			  else if (ButtonMatrixState==0b1000)
+			  			  {
+			  				state = first;
 
+			  			  }
+			  else
+			  			  {
+			  				state = waiting_clear;
+			  			  }
 			  break;
 		  case six:
+			  if(ButtonMatrixState==0b100000)
+			  	{
+			  	state = seven;
+			  	}
+			  else if (ButtonMatrixState==0b1000)
+			  			  {
+			  				state = first;
 
+			  			  }
+			  else
+			  			  {
+			  				state = waiting_clear;
+			  			  }
 			  break;
 		  case seven:
+			  if(ButtonMatrixState==0b1000000000000)
+			  {
+			  state = eight;
+			  }
+			  else if (ButtonMatrixState==0b1000)
+			  			  {
+			  				state = first;
 
+			  			  }
+			  else
+			  			  {
+			  				state = waiting_clear;
+			  			  }
 			  break;
 		  case eight:
+			  if(ButtonMatrixState==0b1000000000000)
+			  {
+			  state = nine;
+			  }
+			  else if (ButtonMatrixState==0b1000)
+			  			  {
+			  				state = first;
 
+			  			  }
+			  else
+			  			  {
+			  				state = waiting_clear;
+			  			  }
 			  break;
 		  case nine:
+			  if(ButtonMatrixState==0b1000000000000)
+			  {
+			  state = ten;
+			  }
+			  else if (ButtonMatrixState==0b1000)
+			  			  {
+			  				state = first;
 
+			  			  }
+			  else
+			  			  {
+			  				state = waiting_clear;
+			  			  }
 			  break;
 		  case ten:
+			  if(ButtonMatrixState==0b1000000)
+			  {
+			  state = eleven;
+			  }
+			  else if (ButtonMatrixState==0b1000)
+			  			  {
+			  				state = first;
 
+			  			  }
+			  else
+			  			  {
+			  				state = waiting_clear;
+			  			  }
 			  break;
 		  case eleven:
+			  if(ButtonMatrixState==0b10000000000)
+			  {
 
+			  state = waiting_ok;
+			  }
+			  else if (ButtonMatrixState==0b1000)
+			  			  {
+			  				state = first;
+
+			  			  }
+			  else
+			  			  {
+			  				state = waiting_clear;
+			  			  }
 			  break;
 
 		  }
-		  before = ButtonMatrixState;
-		  }
+
+		  }before = ButtonMatrixState;
 }
 /* USER CODE END 4 */
 
