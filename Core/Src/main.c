@@ -54,8 +54,12 @@ static void MX_USART2_UART_Init(void);
 uint16_t ButtonMatrixState=0;
 uint32_t ButtonMatrixTimestamp=0;
 GPIO_TypeDef* ButtonmatrixPort[8]={GPIOA,GPIOB,GPIOB,GPIOB,GPIOA,GPIOC,GPIOB,GPIOA};
-
+uint16_t state=0;
+uint32_t before=0;
+uint8_t led=0;
+enum{start=0,first,second,third,four,five,six,seven,eight,nine,ten,eleven,waiting_clear,waiting_ok};
 void ButtonMatrixUpdate();
+void switchcase();
 
 /* USER CODE END PFP */
 
@@ -93,149 +97,17 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-  uint16_t state=0;
-  uint32_t before=0;
-  enum{start=0,first,second,third,four,five,six,seven,eight,nine,ten,eleven,waiting_clear,waiting_ok};
+//  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
   while (1)
   {
-	  if(ButtonMatrixState!=0  &&  ButtonMatrixState!=before)
-	  {
-	  switch(state){
-	  case waiting_ok:
-		  if (ButtonMatrixState==0b1000000000000000)
-		  		{
-			  	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
-			  	  state =start;
-			    }
-			  else{
-			  state = waiting_clear;
-			  }
+	  ButtonMatrixUpdate();
+	  switchcase();
 
-	  break;
-	  case waiting_clear:
-	    if (ButtonMatrixState==0b1000)
-		{
-		  			state = start;
-		  		  }
-		  		  else{
-		  			state = waiting_clear;
-		  		  }
-		  		  break;
-	  break;
-	  case 0:
-		  state =first;
-	  break;
-	  case first:
-		  if (ButtonMatrixState==0b1000000)
-		  		  {
-		  			state = second;
-		  		  }
-		  		  else{
-		  			state = waiting_clear;
-		  		  }
-	  break;
-	  case second:
-		  if (ButtonMatrixState==0b10)
-		  		  {
-		  			state = third;
-		  		  }
-		  		  else{
-		  			state = waiting_clear;
-		  		  }
-	  break;
-	  case third:
-		  if (ButtonMatrixState==0b100)
-		  		  {
-		  			state = four;
-		  		  }
-		  		  else{
-		  			state = waiting_clear;
-		  		  }
-	  break;
-	  case four:
-		  if (ButtonMatrixState==0b10000)
-		  		  {
-		  			state = five;
-		  		  }
-		  		  else{
-		  			state = waiting_clear;
-		  		  }
-	  break;
-	  case five:
-		  if (ButtonMatrixState==0b1000000000000)
-		  		  {
-		  			state = six;
-		  		  }
-		  		  else{
-		  			state = waiting_clear;
-		  		  }
-	  break;
-	  case six:
-		  if (ButtonMatrixState==0b100000)
-		  		  	{
-		  		  	state = seven;
-		  		  	}
-		  		  	else{
-		  		  	state = waiting_clear;
-		  		  	}
-	  break;
-	  case seven:
-		  if (ButtonMatrixState==0b1000000000000)
-		  		  	{
-		  		  	state = eight;
-		  		  	}
-		  else
-		  		  	{
-		  		  	state = waiting_clear;
-		  		  	}
-	break;
-	  case eight:
-		  if (ButtonMatrixState==0b1000000000000)
-		  {
-			state = eight;
-		  }
-		  else{
-			state = waiting_clear;
-		  }
-		  break;
-	  case nine:
-		  if (ButtonMatrixState==0b1000000000000)
-		  		  {
-		  			state = ten;
-		  		  }
-		  		  else{
-		  			state = waiting_clear;
-		  		  }
-		  		  break;
-		  break;
-	  case ten:
-		  if (ButtonMatrixState==0b1000000)
-		  		  {
-		  			state = eleven;
-		  		  }
-		  		  else{
-		  			state = waiting_clear;
-		  		  }
-		  		  break;
-		  break;
-	  case eleven:
-		  if (ButtonMatrixState==0b10000000000)
-		  		  {
-		  			state = waiting_ok;
-		  		  }
-		  		  else{
-		  			state = waiting_clear;
-		  		  }
-		  		  break;
-		  break;
-
-	  }
-	  before = ButtonMatrixState;
-	  }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -336,7 +208,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, LD2_Pin|GPIO_PIN_6, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7|GPIO_PIN_9, GPIO_PIN_SET);
@@ -353,16 +225,23 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : LD2_Pin PA7 PA9 */
-  GPIO_InitStruct.Pin = LD2_Pin|GPIO_PIN_7|GPIO_PIN_9;
+  /*Configure GPIO pin : LD2_Pin */
+  GPIO_InitStruct.Pin = LD2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PA6 PA7 PA9 */
+  GPIO_InitStruct.Pin = GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_9;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PC7 */
   GPIO_InitStruct.Pin = GPIO_PIN_7;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
@@ -381,7 +260,7 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin : PB6 */
   GPIO_InitStruct.Pin = GPIO_PIN_6;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
@@ -413,6 +292,62 @@ void ButtonMatrixUpdate(){
 
 	}
 
+}
+
+void switchcase(){
+
+	if(ButtonMatrixState!=0  &&  ButtonMatrixState!=before)
+		  {
+		  switch(state){
+		  case waiting_ok:
+
+			  //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+		  break;
+		  case waiting_clear:
+
+
+		  break;
+		  case 0:
+			  state =first;
+		  break;
+		  case first:
+//			  if(ButtonMatrixState==)
+
+		  break;
+		  case second:
+
+		  break;
+		  case third:
+
+		  break;
+		  case four:
+
+			  break;
+		  case five:
+
+			  break;
+		  case six:
+
+			  break;
+		  case seven:
+
+			  break;
+		  case eight:
+
+			  break;
+		  case nine:
+
+			  break;
+		  case ten:
+
+			  break;
+		  case eleven:
+
+			  break;
+
+		  }
+		  before = ButtonMatrixState;
+		  }
 }
 /* USER CODE END 4 */
 
